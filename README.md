@@ -39,6 +39,6 @@ Program jest rozpowszechniany na podstawie licencji ``GNU GPL``
 [PiotrZET][mail]
 
 <!-- Markdown link & img dfn's -->
-[wiki]: https://github.com/ZalewskiPiotr/work_time_report/wiki/Raport-czasu-pracy
+[wiki]: https://github.com/ZalewskiPiotr/robocopy_log_reader/wiki
 [licence]: https://pl.wikipedia.org/wiki/GNU_General_Public_License
 [mail]: mailto:1piotrzalewski@gmail.com
