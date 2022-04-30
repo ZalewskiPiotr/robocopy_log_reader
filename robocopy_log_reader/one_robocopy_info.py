@@ -1,5 +1,7 @@
 # Standard library imports
+
 # Third party imports
+
 # Local imports
 
 class OneRobocopyInfo:
@@ -10,6 +12,7 @@ class OneRobocopyInfo:
 
     Atrybuty:
     ---------
+    #TODO: dodać dokumentację atrybutów
 
     Metody:
     -------
