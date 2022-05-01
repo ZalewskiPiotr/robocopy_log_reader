@@ -1,4 +1,4 @@
-""" Skrypt uruchaniający i sterujący programem 'Robocopy log reader'
+""" Skrypt uruchamiający i sterujący programem 'Robocopy log reader'
 
 Ten skrypt uruchamia program i steruje jego przepływem.
 
@@ -20,6 +20,19 @@ Skrypt zawiera funkcje:
 from one_robocopy_info import OneRobocopyInfo
 
 
+# TODO: dodać dokumentację
+def get_source(text_line: str):
+    data_from_line = text_line.strip().split(' : ')
+    if data_from_line[0].upper() == 'SOURCE':
+        return data_from_line[1]
+
+
+# TODO: dodać dokumentację
+# TODO: dodać testy jednostkowe
+def get_destination(text_file: str):
+    pass
+
+
 # TODO: dodać test jednostkowy. Podać ścieżkę do pliku testowego
 def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
     """ Odczytanie pliku logu
@@ -35,7 +48,9 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
         line = text_file.readline()
         while line:
             print(line.strip('\t\n'))
-            if (line.find('Started :')) > -1:
+            if (line.find('Started :')) > -1:  # Początek polecenia robocopy
+                info_source = get_source(text_file.readline())
+                info_destination = get_destination(text_file.readline())
                 line = text_file.readline()
                 print(line.strip('\t\n'))
                 while line.find('Ended :') > -1:
