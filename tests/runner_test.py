@@ -12,6 +12,8 @@ Funkcje:
     dwukropka.
 - test_get_source_if_put_bad_line_get_error():
     Jeżeli podana linia będzie miała nieprawidłowy format do powinien zostać zwrócony wyjątek
+- test_get_source_if_put_empty_line_get_value_error():
+    Jeżeli podana linia będzie pusta to powinien zostać zwrócony wyjątek
 
 Wyjątki:
 --------
@@ -37,7 +39,7 @@ def test_get_source_if_put_correct_line_get_correct_answer():
     assert value == 'C:\\Users\\Piotr\\'
 
 
-def test_get_source_if_put_bad_line_get_error():
+def test_get_source_if_put_bad_line_get_value_error():
     """
     Jeżeli podana linia będzie miała nieprawidłowy format do powinien zostać zwrócony wyjątek
     """
@@ -45,3 +47,11 @@ def test_get_source_if_put_bad_line_get_error():
     with pytest.raises(ValueError):
         runner.get_source(text_line)
 
+
+def test_get_source_if_put_empty_line_get_value_error():
+    """
+    Jeżeli podana linia będzie pusta to powinien zostać zwrócony wyjątek
+    """
+    text_line = ''
+    with pytest.raises(ValueError):
+        runner.get_source(text_line)

@@ -20,11 +20,21 @@ Skrypt zawiera funkcje:
 from one_robocopy_info import OneRobocopyInfo
 
 
-# TODO: dodać dokumentację
-def get_source(text_line: str):
+def get_source(text_line: str) -> str:
+    """ Pobranie żródła kopiowanych danych
+
+    Funkcja z podanego ciągu pobiera informację o źródłowym katalogu, który był kopiowany.
+
+    :param text_line: linia z pliku logu w formacie 'SOURCE : xxxxxxx'
+    :type text_line: str
+    :return: Kopiowany katalog. W przypadku nieprawidłowego formatu ciągu wejściowego zwracany jest ValueError
+    :rtype: str
+    """
     data_from_line = text_line.strip().split(' : ')
     if data_from_line[0].upper() == 'SOURCE':
         return data_from_line[1]
+    else:
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'SOURCE : '")
 
 
 # TODO: dodać dokumentację
