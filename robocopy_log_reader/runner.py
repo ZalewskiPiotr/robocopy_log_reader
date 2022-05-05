@@ -7,6 +7,10 @@ Uruchomienie skryptu odbywa się poprzez wywołanie:
 
 Skrypt zawiera funkcje:
 -----------------------
+- get_source(text_line: str) -> str:
+    Pobranie źródła kopiowanych danych
+- get_destination(text_line: str):
+    Pobranie docelowego miejsca kopiowanych danych
 - read_log_file(file_path: str)
     Odczyt danych z pliku logu
 - main
@@ -21,7 +25,7 @@ from one_robocopy_info import OneRobocopyInfo
 
 
 def get_source(text_line: str) -> str:
-    """ Pobranie żródła kopiowanych danych
+    """ Pobranie źródła kopiowanych danych
 
     Funkcja z podanego ciągu pobiera informację o źródłowym katalogu, który był kopiowany.
 
@@ -37,10 +41,20 @@ def get_source(text_line: str) -> str:
         raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'SOURCE : '")
 
 
-# TODO: dodać dokumentację
-# TODO: dodać testy jednostkowe
-def get_destination(text_file: str):
-    pass
+def get_destination(text_line: str):
+    """ Pobranie docelowego miejsca kopiowanych danych
+
+    :param text_line: linia z pliku logu w formacie 'DEST : xxxxxxx'
+    :type text_line: str
+    :return: miejsce docelowe dla kopiowanych danych. W przypadku nieprawidłowego formatu ciągu wejściowego zwracany
+    jest ValueError
+    :rtype: str
+    """
+    data_from_line = text_line.strip().split(' : ')
+    if data_from_line[0].upper() == 'DEST':
+        return data_from_line[1]
+    else:
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'DEST : '")
 
 
 # TODO: dodać test jednostkowy. Podać ścieżkę do pliku testowego
