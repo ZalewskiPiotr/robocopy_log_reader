@@ -24,6 +24,23 @@ Skrypt zawiera funkcje:
 from one_robocopy_info import OneRobocopyInfo
 
 
+def get_start_date(text_line: str) -> str:
+    """ Pobranie informacji o dacie startu kopiowania
+
+    Funkcja z podanego ciągu tekstowego wyciąga informację o dacie uruchomienia polecenia 'robocopy'
+
+    :param text_line: linia z pliku logu w formacie '  Started : czwartek, 31 października 2019 16:19:48'
+    :type text_line: str
+    :return: Data uruchomienia polecenia. W przypadku nieprawidłowego formatu ciągu wejściowego zwracany jest ValueError
+    :rtype: str
+    """
+    data_from_line = text_line.strip().split(' : ')
+    if data_from_line[0].upper() == 'STARTED':
+        return data_from_line[1]
+    else:
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Started: '")
+
+
 def get_source(text_line: str) -> str:
     """ Pobranie źródła kopiowanych danych
 
@@ -38,7 +55,7 @@ def get_source(text_line: str) -> str:
     if data_from_line[0].upper() == 'SOURCE':
         return data_from_line[1]
     else:
-        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'SOURCE : '")
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Source : '")
 
 
 def get_destination(text_line: str):
@@ -54,7 +71,7 @@ def get_destination(text_line: str):
     if data_from_line[0].upper() == 'DEST':
         return data_from_line[1]
     else:
-        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'DEST : '")
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Dest : '")
 
 
 # TODO: dodać test jednostkowy. Podać ścieżkę do pliku testowego
@@ -73,6 +90,7 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
         while line:
             print(line.strip('\t\n'))
             if (line.find('Started :')) > -1:  # Początek polecenia robocopy
+                start_date = get_start_date(line)
                 info_source = get_source(text_file.readline())
                 info_destination = get_destination(text_file.readline())
                 line = text_file.readline()
