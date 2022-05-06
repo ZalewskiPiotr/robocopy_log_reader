@@ -58,7 +58,7 @@ def get_source(text_line: str) -> str:
         raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Source : '")
 
 
-def get_destination(text_line: str):
+def get_destination(text_line: str) -> str:
     """ Pobranie docelowego miejsca kopiowanych danych
 
     :param text_line: linia z pliku logu w formacie 'DEST : xxxxxxx'
@@ -72,6 +72,24 @@ def get_destination(text_line: str):
         return data_from_line[1]
     else:
         raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Dest : '")
+
+
+# TODO: dodać dokumentację
+# TODO: dodać testy jednostkowe
+def get_dirs_info(text_line: str) -> tuple[int, int, int]:
+    pass
+
+
+# TODO: dodać dokumentację
+# TODO: dodać testy jednostkowe
+def get_files_info(text_line: str) -> tuple[int, int, int]:
+    pass
+
+
+# TODO: dodać dokumentację
+# TODO: dodać testy jednostkowe
+def get_end_date(text_line: str) -> str:
+    pass
 
 
 # TODO: dodać test jednostkowy. Podać ścieżkę do pliku testowego
@@ -88,16 +106,19 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
     with open(file_path, 'rt') as text_file:
         line = text_file.readline()
         while line:
-            print(line.strip('\t\n'))
             if (line.find('Started :')) > -1:  # Początek polecenia robocopy
                 start_date = get_start_date(line)
                 info_source = get_source(text_file.readline())
                 info_destination = get_destination(text_file.readline())
                 line = text_file.readline()
-                print(line.strip('\t\n'))
-                while line.find('Ended :') > -1:
-                    print(line.strip('\t\n'))
-                    line = text_file.readline()
+            if (line.find('Dirs :')) > -1:  # Odczyt podsumowania kopiowania z pliku logu
+                dirs_copied, dirs_skipped, dirs_failed = get_dirs_info(line)
+                files_copied, files_skipped, files_failed = get_files_info(text_file.readline())
+                line = text_file.readline()
+            if (line.find('Ended :')) > -1:  # DAta końca wykonania polecenia robocopy
+                end_date = get_end_date(line)
+                robocopy_info = OneRobocopyInfo(start_date, end_date, info_source, info_destination, dirs_skipped,
+                                                dirs_copied, dirs_failed, files_skipped, files_copied, files_failed)
             line = text_file.readline()
 
 
