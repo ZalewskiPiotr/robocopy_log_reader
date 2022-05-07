@@ -7,10 +7,16 @@ Uruchomienie skryptu odbywa się poprzez wywołanie:
 
 Skrypt zawiera funkcje:
 -----------------------
+- get_start_date(text_line: str) -> str:
+    Pobranie informacji o dacie startu kopiowania
 - get_source(text_line: str) -> str:
     Pobranie źródła kopiowanych danych
 - get_destination(text_line: str):
     Pobranie docelowego miejsca kopiowanych danych
+- get_dirs_info(text_line: str) -> tuple[int, int, int]:
+    Odczytanie podsumowania dla katalogów
+- get_files_info(text_line: str) -> tuple[int, int, int]:
+    Odczytanie podsumowania dla plików
 - read_log_file(file_path: str)
     Odczyt danych z pliku logu
 - main
@@ -38,7 +44,25 @@ def get_start_date(text_line: str) -> str:
     if data_from_line[0].upper() == 'STARTED':
         return data_from_line[1]
     else:
-        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Started: '")
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Started : '")
+
+
+# TODO: dodać testy jednostkowe
+def get_end_date(text_line: str) -> str:
+    """ Pobranie informacji o dacie zakończenia kopiowania
+
+    Funkcja z podanego ciągu tekstowego wyciąga informację o dacie zakończenia polecenia 'robocopy'
+
+    :param text_line: linia z pliku logu w formacie '  Ended : czwartek, 31 października 2019 16:19:48'
+    :type text_line: str
+    :return: Data zakończenia polecenia. W przypadku nieprawidłowego formatu ciągu wejściowego zwracany jest ValueError
+    :rtype: str
+    """
+    data_from_line = text_line.strip().split(' : ')
+    if data_from_line[0].upper() == 'ENDED':
+        return data_from_line[1]
+    else:
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Ended : '")
 
 
 def get_source(text_line: str) -> str:
@@ -74,22 +98,46 @@ def get_destination(text_line: str) -> str:
         raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Dest : '")
 
 
-# TODO: dodać dokumentację
-# TODO: dodać testy jednostkowe
 def get_dirs_info(text_line: str) -> tuple[int, int, int]:
-    pass
+    """ Odczytanie podsumowania dla katalogów
+
+    Funkcja odczytuje z pliku logu podsumowanie wykonania polecenia robocopy. Funkcja zwraca informacje podsumowujące
+    dla katalogów.
+
+    :param text_line: linia z pliku logu w formacie 'Dirs :         1         1         0         0         0         0'
+    Poszczególne pozycje oznaczają: Total    Copied   Skipped  Mismatch    FAILED    Extras
+    :type text_line: str
+    :return: ilość katalogów skopiowanych, ilość katalogów pominiętych, ilość błędów
+    :rtype: tuple[int, int, int]
+    """
+    data_from_line = text_line.strip().split(' : ')
+    if data_from_line[0].upper() == 'DIRS':
+        dir_info = data_from_line[1].strip().split()
+        return int(dir_info[1]), int(dir_info[2]), int(dir_info[4])
+
+    else:
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Dirs : '")
 
 
-# TODO: dodać dokumentację
-# TODO: dodać testy jednostkowe
 def get_files_info(text_line: str) -> tuple[int, int, int]:
-    pass
+    """ Odczytanie podsumowania dla plików
 
+    Funkcja odczytuje z pliku logu podsumowanie wykonania polecenia robocopy. Funkcja zwraca informacje podsumowujące
+    dla plików.
 
-# TODO: dodać dokumentację
-# TODO: dodać testy jednostkowe
-def get_end_date(text_line: str) -> str:
-    pass
+    :param text_line: linia z pliku logu w formacie 'Files :         1         1         0         0         0         0'
+    Poszczególne pozycje oznaczają: Total    Copied   Skipped  Mismatch    FAILED    Extras
+    :type text_line: str
+    :return: ilość plików skopiowanych, ilość plików pominiętych, ilość błędów
+    :rtype: tuple[int, int, int]
+    """
+    data_from_line = text_line.strip().split(' : ')
+    if data_from_line[0].upper() == 'FILES':
+        dir_info = data_from_line[1].strip().split()
+        return int(dir_info[1]), int(dir_info[2]), int(dir_info[4])
+
+    else:
+        raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Files : '")
 
 
 # TODO: dodać test jednostkowy. Podać ścieżkę do pliku testowego
@@ -103,7 +151,9 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
     :return: lista obiektów, które przechowują informacje podsumowujące każde wywołanie polecenie 'robocopy'
     :rtype: list[OneRobocopyInfo]
     """
-    with open(file_path, 'rt') as text_file:
+
+    robocopy_list = []
+    with open(file_path, 'rt', encoding='utf16') as text_file:
         line = text_file.readline()
         while line:
             if (line.find('Started :')) > -1:  # Początek polecenia robocopy
@@ -119,7 +169,9 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
                 end_date = get_end_date(line)
                 robocopy_info = OneRobocopyInfo(start_date, end_date, info_source, info_destination, dirs_skipped,
                                                 dirs_copied, dirs_failed, files_skipped, files_copied, files_failed)
+                robocopy_list.append(robocopy_info)
             line = text_file.readline()
+    return robocopy_list
 
 
 def main():
@@ -130,12 +182,11 @@ def main():
     :return: ---
     :rtype: ---
     """
-    read_log_file('C:/work/Python projects/robocopy_log_reader/data/KopiaZapasowaLOG.txt')
+    robocopy_list = read_log_file('C:/work/Python projects/robocopy_log_reader/data/KopiaZapasowaLOG.txt')
 
     # sekcja testowa - testujemy to co wytworzysliśmy
-    info = OneRobocopyInfo('24 kwieciec 2022', '25 wkiecień 2022', 'c:\dane\source', 'c:\dane\dest', 1, 2, 3, 10, 20,
-                           30)
-    print('hello')
+    for info in robocopy_list:
+        print(info)
 
 
 if __name__ == "__main__":

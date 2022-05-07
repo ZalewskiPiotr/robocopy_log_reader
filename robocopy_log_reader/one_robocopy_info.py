@@ -35,3 +35,6 @@ class OneRobocopyInfo:
         self._file_amount_copied = file_amount_copied
         self._file_amount_errors = file_amount_errors
 
+    def __str__(self):
+        return self._start_date + ' ' + self._source
+
