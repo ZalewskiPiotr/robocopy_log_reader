@@ -145,6 +145,12 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
     """ Odczytanie pliku logu
 
     Funkcja odczytuje dane z pliku logu oraz zarządza tworzeniem informacji podsumowującej odczytane dane.
+    !!!!!!!!!!!!!   WAŻNE   !!!!!!!!!!
+    Polecenie 'robocopy' z parametrem logowania 'unilog+' zapisuje plik loguw takim formacie, że nie da się go odczytać.
+    Z polskimi znakami nie radzą sobie inne programy np. Word, czy Notepad++. Aby plik logu był zapisany w formacie
+    UTF-16 należy: uruchomić polecenie 'robocopy' z parametrem 'unilog'. Następnie trzeba wyczyścić plik logu i dalej
+    można uruchamiać polecenie 'robocopy' z parametrem 'unilog+'
+    !!!!!!!!!!!!!!!!!!!!!!!
 
     :param file_path: ścieżka do pliku z logiem
     :type file_path: str
@@ -153,7 +159,7 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
     """
 
     robocopy_list = []
-    with open(file_path, 'rt', encoding='utf16') as text_file:
+    with open(file_path, 'rt', encoding='utf_16') as text_file:
         line = text_file.readline()
         while line:
             if (line.find('Started :')) > -1:  # Początek polecenia robocopy
@@ -185,8 +191,15 @@ def main():
     robocopy_list = read_log_file('C:/work/Python projects/robocopy_log_reader/data/KopiaZapasowaLOG.txt')
 
     # sekcja testowa - testujemy to co wytworzysliśmy
+    message: str = ''
+    error_message: str = ''
     for info in robocopy_list:
-        print(info)
+        if info.file_errors > 0 or info.folder_errors > 0:
+            error_message = '!!!!!!!!!! WYKRYTO BłĘDY W PLIKU LOGU !!!!!!!!!!'
+        message = message + str(info) + '\n'
+    print(message)
+    if len(error_message) > 0:
+        print(error_message)
 
 
 if __name__ == "__main__":

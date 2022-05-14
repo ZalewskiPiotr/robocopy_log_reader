@@ -36,5 +36,18 @@ class OneRobocopyInfo:
         self._file_amount_errors = file_amount_errors
 
     def __str__(self):
-        return self._start_date + ' ' + self._source
+        errors: str = str(self._folder_amount_errors + self._file_amount_errors)
+        return self._start_date + \
+               ' -> ' + self._source + \
+               ' -> Folders copied: ' + str(self._folder_amount_copied) + \
+               ' -> Files copied: ' + str(self._file_amount_copied) + \
+               'Files skipped: ' + str(self._file_amount_skipped) + \
+               ' -> ERRORS: ' + errors
 
+    @property
+    def file_errors(self):
+        return self._file_amount_errors
+
+    @property
+    def folder_errors(self):
+        return self._folder_amount_errors
