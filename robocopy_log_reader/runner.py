@@ -19,10 +19,13 @@ Skrypt zawiera funkcje:
     Odczytanie podsumowania dla plików
 - read_log_file(file_path: str)
     Odczyt danych z pliku logu
+- get_configuration_settings() -> tuple[str, str]
+    Odczyt pliku konfiguracyjnego
 - main
     Główna funkcja sterująca przepływem programu
 """
 # Standard library imports
+import configparser
 
 # Third party imports
 
@@ -180,6 +183,22 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
     return robocopy_list
 
 
+# TODO: dodać testy jednostkowe
+def get_configuration_settings() -> tuple[str, str]:
+    """ Odczyt pliku konfiguracyjnego
+
+    Funkcja odczytuje dane z pliku konfiguracyjnego
+
+    :return: Nazwa pliku log, Ścieżka do pliku logu
+    :rtype: tuple[str, str]
+    """
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    log_file_name = config['settings']['log_file_name']
+    log_file_path = config['settings']['path_to_log_file']
+    return log_file_name, log_file_path
+
+
 def main():
     """ Główna funkcja sterująca przepływem programu.
 
@@ -188,9 +207,10 @@ def main():
     :return: ---
     :rtype: ---
     """
-    robocopy_list = read_log_file('C:/work/Python projects/robocopy_log_reader/data/KopiaZapasowaLOG.txt')
+    log_file_name, log_file_path = get_configuration_settings()
+    robocopy_list = read_log_file(log_file_path + log_file_name)
 
-    # sekcja testowa - testujemy to co wytworzysliśmy
+    # Wyświetlenie raportu
     message: str = ''
     error_message: str = ''
     for info in robocopy_list:
