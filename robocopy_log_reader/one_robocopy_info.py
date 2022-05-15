@@ -41,7 +41,7 @@ class OneRobocopyInfo:
                ' -> ' + self._source + \
                ' -> Folders copied: ' + str(self._folder_amount_copied) + \
                ' -> Files copied: ' + str(self._file_amount_copied) + \
-               'Files skipped: ' + str(self._file_amount_skipped) + \
+               ' -> Files skipped: ' + str(self._file_amount_skipped) + \
                ' -> ERRORS: ' + errors
 
     @property
