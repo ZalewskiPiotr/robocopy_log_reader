@@ -50,7 +50,6 @@ def get_start_date(text_line: str) -> str:
         raise ValueError(f"Nieprawidłowe dane wejściowe: '{text_line}'. Spodziewano się ciągu 'Started : '")
 
 
-# TODO: dodać testy jednostkowe
 def get_end_date(text_line: str) -> str:
     """ Pobranie informacji o dacie zakończenia kopiowania
 

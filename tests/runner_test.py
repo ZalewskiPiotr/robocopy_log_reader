@@ -163,7 +163,7 @@ def test_get_end_date_if_put_line_without_started_word_get_value_error():
     """
     text_line = 'czwartek, 31 października 2019 16:19:48'
     with pytest.raises(ValueError):
-        runner.get_start_date(text_line)
+        runner.get_end_date(text_line)
 
 
 def test_get_end_date_if_put_empty_line_get_value_error():
@@ -172,7 +172,7 @@ def test_get_end_date_if_put_empty_line_get_value_error():
     """
     text_line = ''
     with pytest.raises(ValueError):
-        runner.get_start_date(text_line)
+        runner.get_end_date(text_line)
 
 
 def test_get_dirs_info_if_put_correct_line_get_correct_answer():
