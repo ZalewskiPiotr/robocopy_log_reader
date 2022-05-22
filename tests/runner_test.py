@@ -231,3 +231,9 @@ def test_get_files_if_put_empty_line_get_value_error():
     text_line = '   '
     with pytest.raises(ValueError):
         runner.get_files_info(text_line)
+
+
+def test_get_configuration_settings_if_file_not_found_get_error():
+    path_to_file = '..\\data\\no_file_config.ini'
+    with pytest.raises(FileNotFoundError):
+        runner.get_configuration_settings()

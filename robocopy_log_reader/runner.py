@@ -183,6 +183,10 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
 
 
 # TODO: dodać testy jednostkowe
+# -- na dysku może nie być pliku config.ini - co wtedy? -> wyjątek 'brak pliku konfiguracyjnego'
+# -- w pliku config może nie być sekcji settings - co wtedy -> wyjątek 'w pliku ini brakuje settings'
+# -- w pliku config może nie być klucza log_file_name lub path_to_log_file - co wtedy -> wyjątek w pliku ini brakuje 'xxx'
+# -- trzeba dodać parametr do funkcji ze ścieżką do pliku config.ini
 def get_configuration_settings() -> tuple[str, str]:
     """ Odczyt pliku konfiguracyjnego
 
@@ -192,7 +196,10 @@ def get_configuration_settings() -> tuple[str, str]:
     :rtype: tuple[str, str]
     """
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    found_files = config.read('config.ini')
+    if len(found_files) == 0:
+        raise FileNotFoundError('Nie znaleziono pliku config.ini')
+
     log_file_name = config['settings']['log_file_name']
     log_file_path = config['settings']['path_to_log_file']
     return log_file_name, log_file_path
