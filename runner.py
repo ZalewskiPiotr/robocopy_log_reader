@@ -21,11 +21,6 @@ import configparser
 from robocopy_log_reader.robocopy_log_reader import read_log_file
 
 
-# TODO: dodać testy jednostkowe
-# -- na dysku może nie być pliku config.ini - co wtedy? -> wyjątek 'brak pliku konfiguracyjnego'
-# -- w pliku config może nie być sekcji settings - co wtedy -> wyjątek 'w pliku ini brakuje settings'
-# -- w pliku config może nie być klucza log_file_name lub path_to_log_file - co wtedy -> wyjątek w pliku ini brakuje 'xxx'
-# -- trzeba dodać parametr do funkcji ze ścieżką do pliku config.ini
 def get_configuration_settings(path_to_config_file: str) -> tuple[str, str]:
     """ Odczyt pliku konfiguracyjnego
 
@@ -41,18 +36,22 @@ def get_configuration_settings(path_to_config_file: str) -> tuple[str, str]:
     if len(found_files) == 0:
         raise FileNotFoundError(f"Nie znaleziono pliku konfiguracyjnego: {path_to_config_file}")
 
-    log_file_name = config['settings']['log_file_name']
-    log_file_path = config['settings']['path_to_log_file']
-    return log_file_name, log_file_path
+    if config.has_section('settings'):
+        if config.has_option('settings', 'log_file_name') and config.has_option('settings', 'path_to_log_file'):
+            log_file_name = config['settings']['log_file_name']
+            log_file_path = config['settings']['path_to_log_file']
+            return log_file_name, log_file_path
+        else:
+            raise KeyError(f"W pliku konfiguracyjnym {path_to_config_file} nie znaleziono klucza 'log_file_name' lub"
+                             f"path_to_log_file")
+    else:
+        raise KeyError(f"W pliku konfiguracyjnym {path_to_config_file} nie znaleziono sekcji 'settings'")
 
 
 def main():
     """ Główna funkcja sterująca przepływem programu.
 
     Funkcja uruchamia odczyt danych z pliku logu, następnie uruchamia wyświetlenie podsumowania.
-
-    :return: ---
-    :rtype: ---
     """
     log_file_name, log_file_path = get_configuration_settings('config.ini')
     robocopy_list = read_log_file(log_file_path + log_file_name)
