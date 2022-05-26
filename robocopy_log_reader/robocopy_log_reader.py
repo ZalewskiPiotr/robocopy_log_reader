@@ -30,7 +30,7 @@ import configparser
 # Third party imports
 
 # Local imports
-from one_robocopy_info import OneRobocopyInfo
+from robocopy_log_reader.one_robocopy_info import OneRobocopyInfo
 
 
 def get_start_date(text_line: str) -> str:
