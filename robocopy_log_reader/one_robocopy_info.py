@@ -51,3 +51,11 @@ class OneRobocopyInfo:
     @property
     def folder_errors(self):
         return self._folder_amount_errors
+
+    @property
+    def file_skipped(self):
+        return self._file_amount_skipped
+
+    @property
+    def folder_skipped(self):
+        return self._folder_amount_skipped

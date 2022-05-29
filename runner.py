@@ -59,13 +59,19 @@ def main():
     # Wyświetlenie raportu
     message: str = ''
     error_message: str = ''
+    skipped_message: str = ''
     for info in robocopy_list:
+        message = message + str(info) + '\n'
         if info.file_errors > 0 or info.folder_errors > 0:
             error_message = '!!!!!!!!!! WYKRYTO BłĘDY W PLIKU LOGU !!!!!!!!!!'
-        message = message + str(info) + '\n'
+        if info.file_skipped > 0 or info.folder_skipped > 0:
+            skipped_message = '!!!!!!!!!! WYKRYTO POMINIĘTE PLIKI W PLIKU LOGU !!!!!!!!!!'
+
     print(message)
     if len(error_message) > 0:
         print(error_message)
+    if len(skipped_message) > 0:
+        print(skipped_message)
 
 
 if __name__ == "__main__":
