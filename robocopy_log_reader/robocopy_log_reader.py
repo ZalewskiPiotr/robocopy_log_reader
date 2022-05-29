@@ -148,10 +148,10 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
 
     Funkcja odczytuje dane z pliku logu oraz zarządza tworzeniem informacji podsumowującej odczytane dane.
     !!!!!!!!!!!!!   WAŻNE   !!!!!!!!!!
-    Polecenie 'robocopy' z parametrem logowania 'unilog+' zapisuje plik loguw takim formacie, że nie da się go odczytać.
-    Z polskimi znakami nie radzą sobie inne programy np. Word, czy Notepad++. Aby plik logu był zapisany w formacie
-    UTF-16 należy: uruchomić polecenie 'robocopy' z parametrem 'unilog'. Następnie trzeba wyczyścić plik logu i dalej
-    można uruchamiać polecenie 'robocopy' z parametrem 'unilog+'
+    Polecenie 'robocopy' z parametrem logowania 'unilog+' zapisuje plik logu w takim formacie, że nie da się go
+    odczytać. Z polskimi znakami nie radzą sobie inne programy np. Word, czy Notepad++. Aby plik logu był zapisany w
+    formacie UTF-16 należy: uruchomić polecenie 'robocopy' z parametrem 'unilog'. Następnie trzeba wyczyścić plik logu
+    i dalej można uruchamiać polecenie 'robocopy' z parametrem 'unilog+'
     !!!!!!!!!!!!!!!!!!!!!!!
 
     :param file_path: ścieżka do pliku z logiem
@@ -173,7 +173,7 @@ def read_log_file(file_path: str) -> list[OneRobocopyInfo]:
                 dirs_copied, dirs_skipped, dirs_failed = get_dirs_info(line)
                 files_copied, files_skipped, files_failed = get_files_info(text_file.readline())
                 line = text_file.readline()
-            if (line.find('Ended :')) > -1:  # DAta końca wykonania polecenia robocopy
+            if (line.find('Ended :')) > -1:  # Data końca wykonania polecenia robocopy
                 end_date = get_end_date(line)
                 robocopy_info = OneRobocopyInfo(start_date, end_date, info_source, info_destination, dirs_skipped,
                                                 dirs_copied, dirs_failed, files_skipped, files_copied, files_failed)
