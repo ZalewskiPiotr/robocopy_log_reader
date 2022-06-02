@@ -13,7 +13,10 @@ Funkcje:
     Jeżeli nie znaleziono pliku konfiguracyjnego to zwracany jest wyjątek FileNotFoundError
 - test_get_configuration_settings_if_file_not_found_get_error():
     Jeżeli nie znaleziono sekcji 'settings' w pliku konfiguracyjnym to zwracany jest wyjątek
-
+- test_get_config_path():
+    Jeżeli podano ścieżkę do katalogu to funkcja powinna dodać do niego pliki o nazwie 'config.ini
+- test_get_path_to_log_file():
+    Jeżeli podano prawidłowe dane to funkcja powinna zwrócić ścieżkę zbudowaną z podanych danych wejściowych
 
 Wyjątki:
 --------
@@ -21,6 +24,7 @@ Wyjątki:
 """
 
 # Standard library imports
+import pathlib
 
 # Third party imports
 import pytest
@@ -64,3 +68,21 @@ def test_get_configuration_settings_if_no_key_get_error():
     path_to_file = '.\\data\\test_config_without_key.ini'
     with pytest.raises(KeyError):
         runner.get_configuration_settings(path_to_file)
+
+
+def test_get_config_path():
+    """
+    Jeżeli podano ścieżkę do katalogu to funkcja powinna dodać do niego pliki o nazwie 'config.ini
+    """
+    folder = pathlib.Path(__file__).resolve().parent
+    config_file = pathlib.Path.joinpath(folder, 'config.ini')
+    assert config_file == runner.get_config_path(folder)
+
+
+def test_get_path_to_log_file():
+    """
+    Jeżeli podano prawidłowe dane to funkcja powinna zwrócić ścieżkę zbudowaną z podanych danych wejściowych
+    """
+    folder = pathlib.Path(__file__).resolve().parent
+    log_file = pathlib.Path.joinpath(folder, 'katalog_z_danymi', 'plik_logu.log')
+    assert log_file == runner.get_path_to_log_file(folder, 'katalog_z_danymi', 'plik_logu.log')
